@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class MateriaDto {
     private Long id;
     private String nombre;
+    private Integer creditos;
     private String carrera;
     private String detalle ;
     private String programa;    

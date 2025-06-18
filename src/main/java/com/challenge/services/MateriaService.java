@@ -1,0 +1,96 @@
+package com.challenge.services;
+
+import com.challenge.dtos.MateriaDto;
+import com.challenge.entities.Materia;
+import com.challenge.repositories.MateriaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
+
+@Service
+public class MateriaService {
+
+    @Autowired
+    private MateriaRepository materiaRepository;
+
+    /**
+     * Actualiza una materia existente en la base de datos.
+     * @param id El ID de la materia a actualizar.
+     * @param materiaDto El DTO con los datos actualizados de la materia.
+     * @return El DTO de la materia actualizada.
+     * @throws ResponseStatusException Si la materia con el ID dado no se encuentra.
+     */
+    @Transactional
+    public MateriaDto actualizarMateria(Long id, MateriaDto materiaDto) {
+        Optional<Materia> materiaOptional = materiaRepository.findById(id);
+
+        if (materiaOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Materia con ID " + id + " no encontrada.");
+        }
+
+        Materia materiaExistente = materiaOptional.get();
+
+        if (materiaDto.getNombre() != null) {
+            materiaExistente.setNombre(materiaDto.getNombre());
+        }
+        if (materiaDto.getCreditos() != null) {
+            materiaExistente.setCreditos(materiaDto.getCreditos());
+        }
+        if (materiaDto.getCarrera() != null) {
+            materiaExistente.setCarrera(materiaDto.getCarrera());
+        }
+        if (materiaDto.getDetalle() != null) {
+            materiaExistente.setDetalle(materiaDto.getDetalle());
+        }
+        if (materiaDto.getPrograma() != null) {
+            materiaExistente.setPrograma(materiaDto.getPrograma());
+        }
+
+        Materia materiaActualizada = materiaRepository.save(materiaExistente);
+
+        MateriaDto responseDto = new MateriaDto();
+        responseDto.setId(materiaActualizada.getId());
+        responseDto.setNombre(materiaActualizada.getNombre());
+        responseDto.setCreditos(materiaActualizada.getCreditos());
+        responseDto.setCarrera(materiaActualizada.getCarrera());
+        responseDto.setDetalle(materiaActualizada.getDetalle());
+        responseDto.setPrograma(materiaActualizada.getPrograma());
+
+        return responseDto;
+    }
+
+    @Transactional
+    public MateriaDto crearMateria(MateriaDto materiaDto) {
+        if (materiaRepository.findByNombre(materiaDto.getNombre()).isPresent()) {
+             throw new ResponseStatusException(HttpStatus.CONFLICT, "El nombre de materia '" + materiaDto.getNombre() + "' ya existe.");
+        }
+
+        Materia materia = new Materia();
+        materia.setNombre(materiaDto.getNombre());
+        materia.setCreditos(materiaDto.getCreditos());
+        materia.setCarrera(materiaDto.getCarrera());
+        materia.setDetalle(materiaDto.getDetalle());
+        materia.setPrograma(materiaDto.getPrograma());
+
+        Materia nuevaMateria = materiaRepository.save(materia);
+
+        return new MateriaDto(
+            nuevaMateria.getId(),
+            nuevaMateria.getNombre(),
+            nuevaMateria.getCreditos(),
+            nuevaMateria.getCarrera(),
+            nuevaMateria.getDetalle(),
+            nuevaMateria.getPrograma()
+        );
+    }
+
+    public java.util.List<MateriaDto> findAllMaterias() {
+        return materiaRepository.findAll().stream()
+                .map(materia -> new MateriaDto(materia.getId(), materia.getNombre(), materia.getCreditos(), materia.getCarrera(), materia.getDetalle(), materia.getPrograma()))
+                .collect(java.util.stream.Collectors.toList());
+    }
+}
