@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class AlumnoController {
 
     @Autowired
-    private AlumnoService alumnoService; // Inyecta el servicio de alumnos
+    private AlumnoService alumnoService;
 
     /**
      * Endpoint POST para guardar un nuevo alumno.
@@ -21,7 +21,7 @@ public class AlumnoController {
      * @return Un ResponseEntity con el AlumnoDto guardado y el estado HTTP 201 Created.
      * Retornará un estado 409 Conflict si el DNI ya existe.
      */
-    @PostMapping // Mapea las solicitudes POST a /api/alumnos a este método
+    @PostMapping
     public ResponseEntity<AlumnoDto> guardarAlumno(@RequestBody AlumnoDto alumnoDto) {
         AlumnoDto alumnoGuardado = alumnoService.guardarAlumno(alumnoDto);
         return new ResponseEntity<>(alumnoGuardado, HttpStatus.CREATED);
