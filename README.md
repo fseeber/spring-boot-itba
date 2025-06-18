@@ -16,13 +16,13 @@ Requisitos Previos:
 
 Opción 1: Ejecución Local (con Maven)
 
-Clonar: git clone <URL_DE_TU_REPOSITORIO> y cd spring-boot-itba.
+Clonar: git clone https://github.com/fseeber/spring-boot-itba.git y cd spring-boot-itba.
 Compilar: mvn clean install
 Ejecutar: java -jar target/spring-boot-itba-0.0.1-SNAPSHOT.jar (ajusta el nombre del JAR). La app estará en http://localhost:8080.
 
 Opción 2: Ejecución Vía Docker
 
-Clonar: git clone <URL_DE_TU_REPOSITORIO> y cd spring-boot-itba.
+Clonar: git clone https://github.com/fseeber/spring-boot-itba.git y cd spring-boot-itba.
 Construir imagen: docker-compose build
 Levantar: docker-compose up La app estará en http://localhost:8080.
 Detener: Ctrl+C y luego docker-compose down para limpiar contenedores.
