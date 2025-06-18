@@ -1,0 +1,24 @@
+# docker-compose.yml
+version: '3.8' # Especifica la versión del formato de Docker Compose
+
+services:
+  app:
+    build:
+      context: . # El contexto de construcción es el directorio actual (donde está el Dockerfile)
+      dockerfile: Dockerfile # Especifica el nombre del Dockerfile
+    container_name: spring-boot-app # Nombre amigable para el contenedor
+    ports:
+      - "8080:8080" # Mapea el puerto 8080 del host al puerto 8080 del contenedor
+    # environment: # Variables de entorno para tu aplicación Spring Boot (opcional)
+    #   SPRING_DATASOURCE_URL: jdbc:h2:mem:alumnosdb # Aunque H2 es en memoria, si tuvieras variables de entorno para DBs externas, irían aquí
+    #   SPRING_DATASOURCE_USERNAME: sa
+    #   SPRING_DATASOURCE_PASSWORD: ""
+    #   SPRING_JPA_HIBERNATE_DDL_AUTO: update # Puedes sobrescribir propiedades de Spring Boot aquí
+    #   SPRING_H2_CONSOLE_ENABLED: "true"
+    #   SPRING_H2_CONSOLE_PATH: /h2-console
+    
+    # volumes: # Si tuvieras datos persistentes o archivos de logs que quisieras mapear al host
+    #   - ./logs:/app/logs # Ejemplo: mapea un directorio 'logs' del host a /app/logs dentro del contenedor
+    
+    # depends_on: # Si tuvieras otros servicios (ej. una DB externa) de los que dependiera tu app
+    #   - database # Ejemplo: espera a que el servicio 'database' esté listo
