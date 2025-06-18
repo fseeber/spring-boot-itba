@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AulaDto {
     private Long id;
-    private Integer piso;
-    private String aula;
-    private String edificio;
+    private String numero;
     private Integer capacidad;
+    private String ubicacion;
+    private String observaciones;
 }
