@@ -3,6 +3,10 @@ package com.challenge.services;
 import com.challenge.dtos.AlumnoDto;
 import com.challenge.entities.Alumno;
 import com.challenge.repositories.AlumnoRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -46,5 +50,31 @@ public class AlumnoService {
         responseDto.setEdad(alumnoGuardado.getEdad());
 
         return responseDto;
+    }
+    
+    private AlumnoDto convertToDto(Alumno alumno) {
+        if (alumno == null) {
+            return null;
+        }
+        return new AlumnoDto(
+            alumno.getId(),
+            alumno.getNombre(),
+            alumno.getApellido(),
+            alumno.getDni(),
+            alumno.getMatricula(),
+            alumno.getDireccion(),
+            alumno.getEdad()
+        );
+    }
+
+    /**
+     * Obtiene una lista de todos los alumnos disponibles.
+     *
+     * @return Una lista de AlumnoDTO.
+     */
+    public List<AlumnoDto> findAllAlumnos() {
+        return alumnoRepository.findAll().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }

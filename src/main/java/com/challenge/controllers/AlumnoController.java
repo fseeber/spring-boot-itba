@@ -2,6 +2,9 @@ package com.challenge.controllers;
 
 import com.challenge.dtos.AlumnoDto;
 import com.challenge.services.AlumnoService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +28,16 @@ public class AlumnoController {
     public ResponseEntity<AlumnoDto> guardarAlumno(@RequestBody AlumnoDto alumnoDto) {
         AlumnoDto alumnoGuardado = alumnoService.guardarAlumno(alumnoDto);
         return new ResponseEntity<>(alumnoGuardado, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint GET para obtener la lista de todos los alumnos.
+     *
+     * @return Un ResponseEntity con una lista de AlumnoDto y el estado HTTP 200 OK.
+     */
+    @GetMapping
+    public ResponseEntity<List<AlumnoDto>> getAllAulas() {
+        List<AlumnoDto> alumnos = alumnoService.findAllAlumnos();
+        return new ResponseEntity<>(alumnos, HttpStatus.OK);
     }
 }

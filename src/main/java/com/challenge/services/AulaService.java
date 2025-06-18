@@ -38,9 +38,9 @@ public class AulaService {
     }
     
     /**
-     * Obtiene una lista de todos los cursos disponibles.
+     * Obtiene una lista de todos los aulas disponibles.
      *
-     * @return Una lista de CursoDto.
+     * @return Una lista de AulaDto.
      */
     public List<AulaDto> findAllAulas() {
         return aulaRepository.findAll().stream()
