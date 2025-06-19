@@ -20,5 +20,13 @@ public class Aula {
 
     private Integer capacidad;
     private String ubicacion;
-    private String observaciones; 
+    private String observaciones;
+    
+    public Aula(String numero, Integer capacidad, String ubicacion, String observaciones) {
+        this.numero = numero;
+        this.capacidad = capacidad;
+        this.ubicacion = ubicacion;
+        this.observaciones = observaciones;
+    } 
+    
 }

@@ -28,4 +28,13 @@ public class Curso {
     @ManyToOne
     @JoinColumn(name = "aula_id")
     private Aula aula;
+
+    public Curso(String nombre, String descripcion, Integer anio, Materia materia, Aula aula) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.anio = anio;
+        this.materia = materia;
+        this.aula = aula;
+    }
+    
 }

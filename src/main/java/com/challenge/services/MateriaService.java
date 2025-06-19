@@ -1,7 +1,11 @@
 package com.challenge.services;
 
+import com.challenge.dtos.AlumnoDto;
 import com.challenge.dtos.MateriaDto;
+import com.challenge.entities.Alumno;
 import com.challenge.entities.Materia;
+import com.challenge.mappers.AlumnoMapper;
+import com.challenge.mappers.MateriaMapper;
 import com.challenge.repositories.MateriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +21,9 @@ public class MateriaService {
 
     @Autowired
     private MateriaRepository materiaRepository;
+
+    @Autowired
+    private MateriaMapper materiaMapper;
 
     /**
      * Actualiza una materia existente en la base de datos.
@@ -52,13 +60,7 @@ public class MateriaService {
 
         Materia materiaActualizada = materiaRepository.save(materiaExistente);
 
-        MateriaDto responseDto = new MateriaDto();
-        responseDto.setId(materiaActualizada.getId());
-        responseDto.setNombre(materiaActualizada.getNombre());
-        responseDto.setCreditos(materiaActualizada.getCreditos());
-        responseDto.setCarrera(materiaActualizada.getCarrera());
-        responseDto.setDetalle(materiaActualizada.getDetalle());
-        responseDto.setPrograma(materiaActualizada.getPrograma());
+        MateriaDto responseDto = materiaMapper.toDto(materiaActualizada);
 
         return responseDto;
     }
@@ -89,8 +91,7 @@ public class MateriaService {
     }
 
     public java.util.List<MateriaDto> findAllMaterias() {
-        return materiaRepository.findAll().stream()
-                .map(materia -> new MateriaDto(materia.getId(), materia.getNombre(), materia.getCreditos(), materia.getCarrera(), materia.getDetalle(), materia.getPrograma()))
-                .collect(java.util.stream.Collectors.toList());
+        List<Materia> materias = materiaRepository.findAll();
+        return materiaMapper.toDtoList(materias);
     }
 }

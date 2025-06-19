@@ -18,5 +18,5 @@ INSERT INTO AULAS (id, numero, capacidad, ubicacion, observaciones) VALUES
 
 INSERT INTO CURSOS (nombre, descripcion, anio, materia_id, aula_id) VALUES
 ('Desarrollo Backend con Spring Boot', 'Curso avanzado de desarrollo de APIs RESTful', 2025, 1, 1),
-('Introduccion a Bases de Datos', 'Primeros pasos con SQL y modelado de datos', 2024, 1, 2),
+('Introduccion a Bases de Datos', 'Primeros pasos con SQL y modelado de datos', 2024, 1, 1),
 ('Arquitectura de Software', 'Patrones y principios de diseño de sistemas', 2025, 1, 1);

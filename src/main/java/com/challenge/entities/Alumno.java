@@ -30,4 +30,13 @@ public class Alumno {
     private String direccion;
     
     private Integer edad;
+
+    public Alumno(String nombre, String apellido, Integer dni, Integer matricula, String direccion, Integer edad) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.dni = dni;
+        this.matricula = matricula;
+        this.direccion = direccion;
+        this.edad = edad;
+    }
 }

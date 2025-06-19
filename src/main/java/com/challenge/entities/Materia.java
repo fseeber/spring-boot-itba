@@ -21,4 +21,13 @@ public class Materia {
     private String carrera;
     private String detalle;
     private String programa;
+    
+    public Materia(String nombre, Integer creditos, String carrera, String detalle, String programa) {
+        this.nombre = nombre;
+        this.creditos = creditos;
+        this.carrera = carrera;
+        this.detalle = detalle;
+        this.programa = programa;
+    }
+    
 }

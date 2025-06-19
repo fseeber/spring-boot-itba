@@ -3,6 +3,8 @@ package com.challenge.services;
 import com.challenge.dtos.AlumnoDto;
 import com.challenge.entities.Alumno;
 import com.challenge.repositories.AlumnoRepository;
+import com.challenge.mappers.AlumnoMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,49 +28,76 @@ class AlumnoServiceTest {
     @Mock
     private AlumnoRepository alumnoRepository;
 
+    @Mock 
+    private AlumnoMapper alumnoMapper;
+
     @InjectMocks
     private AlumnoService alumnoService;
 
-    private Alumno alumno;
-    private AlumnoDto alumnoDto;
+    private Alumno alumnoEntityWithId;
+    private Alumno alumnoEntityWithoutId;
+    private AlumnoDto alumnoDtoWithId;
+    private AlumnoDto alumnoDtoForCreation;
 
     @BeforeEach
     void setUp() {
-        alumno = new Alumno(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
-        alumnoDto = new AlumnoDto(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+        alumnoDtoForCreation = new AlumnoDto(null, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+
+        alumnoEntityWithoutId = new Alumno(null, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+
+        alumnoEntityWithId = new Alumno(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+
+        alumnoDtoWithId = new AlumnoDto(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
     }
 
     @Test
     @DisplayName("Debería crear un alumno exitosamente")
     void shouldCreateAlumnoSuccessfully() {
+        when(alumnoRepository.findByDni(alumnoDtoForCreation.getDni())).thenReturn(Optional.empty());
 
-        when(alumnoRepository.findByDni(alumnoDto.getDni())).thenReturn(Optional.empty());
-        when(alumnoRepository.save(any(Alumno.class))).thenReturn(alumno);
+        when(alumnoMapper.toEntity(alumnoDtoForCreation)).thenReturn(alumnoEntityWithoutId);
 
+        when(alumnoRepository.save(any(Alumno.class))).thenReturn(alumnoEntityWithId);
 
-        AlumnoDto createdAlumnoDto = alumnoService.guardarAlumno(alumnoDto);
+        when(alumnoMapper.toDto(alumnoEntityWithId)).thenReturn(alumnoDtoWithId);
+
+        AlumnoDto createdAlumnoDto = alumnoService.guardarAlumno(alumnoDtoForCreation);
 
         assertThat(createdAlumnoDto).isNotNull();
-        assertThat(createdAlumnoDto.getId()).isEqualTo(alumno.getId());
-        assertThat(createdAlumnoDto.getNombre()).isEqualTo(alumno.getNombre());
+        assertThat(createdAlumnoDto.getId()).isEqualTo(alumnoDtoWithId.getId());
+        assertThat(createdAlumnoDto.getNombre()).isEqualTo(alumnoDtoWithId.getNombre());
+        assertThat(createdAlumnoDto.getDni()).isEqualTo(alumnoDtoWithId.getDni());
+        assertThat(createdAlumnoDto.getMatricula()).isEqualTo(alumnoDtoWithId.getMatricula());
 
-        verify(alumnoRepository, times(1)).findByDni(alumnoDto.getDni());
-        verify(alumnoRepository, times(1)).save(any(Alumno.class));
+        verify(alumnoRepository, times(1)).findByDni(alumnoDtoForCreation.getDni());
+        verify(alumnoMapper, times(1)).toEntity(alumnoDtoForCreation);
+        verify(alumnoRepository, times(1)).save(alumnoEntityWithoutId);
+        verify(alumnoMapper, times(1)).toDto(alumnoEntityWithId);
     }
 
     @Test
     @DisplayName("Debería obtener todos los alumnos")
     void shouldGetAllAlumnos() {
-        Alumno otroAlumno = new Alumno(2L, "Ana", "Ruiz", 55667788, 201, "Los Andes 100", 28);
-        List<Alumno> alumnos = Arrays.asList(alumno, otroAlumno);
-        when(alumnoRepository.findAll()).thenReturn(alumnos);
+        Alumno otroAlumnoEntity = new Alumno(2L, "Ana", "Ruiz", 55667788, 201, "Los Andes 100", 28);
+        AlumnoDto otroAlumnoDto = new AlumnoDto(2L, "Ana", "Ruiz", 55667788, 201, "Los Andes 100", 28);
+
+        List<Alumno> alumnosEntities = Arrays.asList(alumnoEntityWithId, otroAlumnoEntity);
+        List<AlumnoDto> alumnosDtos = Arrays.asList(alumnoDtoWithId, otroAlumnoDto);
+
+        when(alumnoRepository.findAll()).thenReturn(alumnosEntities);
+        when(alumnoMapper.toDtoList(alumnosEntities)).thenReturn(alumnosDtos);
 
         List<AlumnoDto> foundAlumnos = alumnoService.findAllAlumnos();
 
         assertThat(foundAlumnos).isNotNull();
         assertThat(foundAlumnos).hasSize(2);
         assertThat(foundAlumnos.get(0).getNombre()).isEqualTo("Carlos");
+        assertThat(foundAlumnos.get(0).getDni()).isEqualTo(11223344);
         assertThat(foundAlumnos.get(1).getNombre()).isEqualTo("Ana");
+        assertThat(foundAlumnos.get(1).getDni()).isEqualTo(55667788);
+
         verify(alumnoRepository, times(1)).findAll();
+        verify(alumnoMapper, times(1)).toDtoList(alumnosEntities);
     }
+
 }

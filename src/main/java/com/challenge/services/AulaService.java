@@ -2,10 +2,10 @@ package com.challenge.services;
 
 import com.challenge.dtos.AulaDto;
 import com.challenge.entities.Aula;
+import com.challenge.mappers.AulaMapper;
 import com.challenge.repositories.AulaRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +18,9 @@ public class AulaService {
 
     @Autowired
     private AulaRepository aulaRepository;
+
+    @Autowired
+    private AulaMapper aulaMapper;
 
     /**
      * Elimina un aula por su ID y dispara un proceso asíncrono.
@@ -38,24 +41,7 @@ public class AulaService {
      * @return Una lista de AulaDto.
      */
     public List<AulaDto> findAllAulas() {
-        return aulaRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public AulaDto convertToDto(Aula aula) {
-        if (aula == null) return null;
-        return new AulaDto(aula.getId(), aula.getNumero(), aula.getCapacidad(), aula.getUbicacion(), aula.getObservaciones());
-    }
-
-    public Aula convertToEntity(AulaDto aulaDto) {
-        if (aulaDto == null) return null;
-        Aula aula = new Aula();
-        aula.setId(aulaDto.getId());
-        aula.setNumero(aulaDto.getNumero());
-        aula.setCapacidad(aulaDto.getCapacidad());
-        aula.setUbicacion(aulaDto.getUbicacion());
-        aula.setObservaciones(aulaDto.getObservaciones());
-        return aula;
+        List<Aula> aulas = aulaRepository.findAll();
+        return aulaMapper.toDtoList(aulas);
     }
 }
