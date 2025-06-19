@@ -30,6 +30,9 @@ public class CursoService {
     @Autowired
     private AulaRepository aulaRepository;
 
+    @Autowired
+    private RabbitMQSender rabbitMQSender;
+
     /**
      * Crea y guarda un nuevo curso en la base de datos.
      * Valida que la materia y el aula (si se proporciona) existan.
@@ -58,6 +61,8 @@ public class CursoService {
         curso.setAula(aula);
 
         Curso cursoGuardado = cursoRepository.save(curso);
+
+        rabbitMQSender.send(convertToDto(cursoGuardado));
 
         return convertToDto(cursoGuardado);
     }

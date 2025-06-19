@@ -18,8 +18,6 @@ public class AulaService {
 
     @Autowired
     private AulaRepository aulaRepository;
-    @Autowired
-    private InternalProcessService internalProcessService;
 
     /**
      * Elimina un aula por su ID y dispara un proceso asíncrono.
@@ -32,9 +30,6 @@ public class AulaService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aula con ID " + id + " no encontrada para eliminar.");
         }
         aulaRepository.deleteById(id);
-        System.out.println("Aula con ID " + id + " eliminada de la base de datos.");
-
-        internalProcessService.procesarAsincronoDespuesDeBorrarAula(id);
     }
     
     /**

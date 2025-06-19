@@ -16,6 +16,23 @@ services:
     #   SPRING_JPA_HIBERNATE_DDL_AUTO: update # Puedes sobrescribir propiedades de Spring Boot aquí
     #   SPRING_H2_CONSOLE_ENABLED: "true"
     #   SPRING_H2_CONSOLE_PATH: /h2-console
+    environment: # Variables de entorno para tu aplicación dentro del contenedor
+      SPRING_RABBITMQ_HOST: rabbitmq-host # MUY IMPORTANTE: usa el nombre del servicio de RabbitMQ aquí
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      APP_RABBITMQ_QUEUE_NAME: cursos.creacion # Tu propiedad personalizada
+    depends_on: # Asegura que rabbitmq-host se inicie antes que la app
+      - rabbitmq-host  
+  rabbitmq-host: # Define el servicio de RabbitMQ
+    image: rabbitmq:3-management-alpine # Imagen oficial de RabbitMQ con la interfaz de gestión
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"   # Puerto AMQP para la comunicación de tu app
+      - "15672:15672" # Puerto para la interfaz de gestión web (accede vía http://localhost:15672)
+    environment: # Credenciales por defecto para RabbitMQ
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     
     # volumes: # Si tuvieras datos persistentes o archivos de logs que quisieras mapear al host
     #   - ./logs:/app/logs # Ejemplo: mapea un directorio 'logs' del host a /app/logs dentro del contenedor
