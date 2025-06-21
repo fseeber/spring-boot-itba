@@ -42,4 +42,15 @@ public class CursoController {
         List<CursoDto> cursos = cursoService.findAllCursos();
         return new ResponseEntity<>(cursos, HttpStatus.OK);
     }
+
+    /**
+     * Endpoint DELETE para eliminar un curso.
+     * @param id El ID del curso a eliminar.
+     * @return Un ResponseEntity con estado HTTP 204 No Content si se elimina, o 404 Not Found.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCurso(@PathVariable Long id) {
+        cursoService.eliminarCurso(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

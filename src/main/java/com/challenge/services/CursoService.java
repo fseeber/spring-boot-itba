@@ -61,7 +61,7 @@ public class CursoService {
 
         Curso cursoGuardado = cursoRepository.save(curso);
 
-        rabbitMQSender.send(cursoMapper.toDto(cursoGuardado));
+        //rabbitMQSender.send(cursoMapper.toDto(cursoGuardado));
 
         return cursoMapper.toDto(cursoGuardado);
     }
@@ -74,5 +74,18 @@ public class CursoService {
     public List<CursoDto> findAllCursos() {
         List<Curso> cursos = cursoRepository.findAll();
         return cursoMapper.toDtoList(cursos);
+    }
+
+    /**
+     * Elimina un curso por su ID.
+     * @param id El ID del curso a eliminar.
+     * @throws ResponseStatusException Si el curso no se encuentra.
+     */
+    @Transactional
+    public void eliminarCurso(Long id) {
+        if (!cursoRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso con ID " + id + " no encontrado para eliminar.");
+        }
+        cursoRepository.deleteById(id);
     }
 }

@@ -39,4 +39,15 @@ public class MateriaController {
         List<MateriaDto> materias = materiaService.findAllMaterias();
         return new ResponseEntity<>(materias, HttpStatus.OK);
     }
+
+    /**
+     * Endpoint DELETE para eliminar una materia.
+     * @param id El ID de la materia a eliminar.
+     * @return Un ResponseEntity con estado HTTP 204 No Content si se elimina, o 404 Not Found.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarMateria(@PathVariable Long id) {
+        materiaService.eliminarMateria(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

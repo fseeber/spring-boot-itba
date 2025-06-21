@@ -91,4 +91,17 @@ public class MateriaService {
         List<Materia> materias = materiaRepository.findAll();
         return materiaMapper.toDtoList(materias);
     }
+
+     /**
+     * Elimina una materia por su ID.
+     * @param id El ID de la materia a eliminar.
+     * @throws ResponseStatusException Si la materia no se encuentra.
+     */
+    @Transactional
+    public void eliminarMateria(Long id) {
+        if (!materiaRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Materia con ID " + id + " no encontrado para eliminar.");
+        }
+        materiaRepository.deleteById(id);
+    }
 }
