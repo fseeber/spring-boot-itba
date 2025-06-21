@@ -1,10 +1,7 @@
 package com.challenge.services;
 
-import com.challenge.dtos.AlumnoDto;
 import com.challenge.dtos.MateriaDto;
-import com.challenge.entities.Alumno;
 import com.challenge.entities.Materia;
-import com.challenge.mappers.AlumnoMapper;
 import com.challenge.mappers.MateriaMapper;
 import com.challenge.repositories.MateriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

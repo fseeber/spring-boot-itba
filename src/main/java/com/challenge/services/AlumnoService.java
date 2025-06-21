@@ -52,4 +52,17 @@ public class AlumnoService {
         List<Alumno> alumnos = alumnoRepository.findAll();
         return alumnoMapper.toDtoList(alumnos);
     }
+
+    /**
+     * Elimina un alumno por su ID.
+     * @param id El ID del alumno a eliminar.
+     * @throws ResponseStatusException Si el alumno no se encuentra.
+     */
+    @Transactional
+    public void eliminarAlumno(Long id) {
+        if (!alumnoRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Alumno con ID " + id + " no encontrado para eliminar.");
+        }
+        alumnoRepository.deleteById(id);
+    }
 }

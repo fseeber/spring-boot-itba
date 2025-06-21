@@ -1,6 +1,8 @@
 package com.challenge.services;
 
+import com.challenge.dtos.AlumnoDto;
 import com.challenge.dtos.AulaDto;
+import com.challenge.entities.Alumno;
 import com.challenge.entities.Aula;
 import com.challenge.mappers.AulaMapper;
 import com.challenge.repositories.AulaRepository;
@@ -43,5 +45,26 @@ public class AulaService {
     public List<AulaDto> findAllAulas() {
         List<Aula> aulas = aulaRepository.findAll();
         return aulaMapper.toDtoList(aulas);
+    }
+
+    /**
+     * Guarda una nueva aula en la base de datos.
+     * Recibe un AulaDto, lo convierte a entidad, lo guarda y devuelve el AulaDto resultante.
+     * @param aulaDto El DTO del aula a guardar.
+     * @return El DTO del aula guardado (con el ID generado).
+     */
+    @Transactional
+    public AulaDto guardarAula(AulaDto aulaDto) {
+        if (aulaRepository.findByNumero(aulaDto.getNumero()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El numero " + aulaDto.getNumero() + " ya está registrado para otra aula.");
+        }
+        
+        Aula aula = aulaMapper.toEntity(aulaDto);
+
+        Aula aulaGuardado = aulaRepository.save(aula);
+
+        AulaDto responseDto = aulaMapper.toDto(aulaGuardado);
+
+        return responseDto;
     }
 }

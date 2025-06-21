@@ -1,6 +1,7 @@
 package com.challenge.controllers;
 
 import com.challenge.dtos.AulaDto;
+import com.challenge.dtos.CursoDto;
 import com.challenge.services.AulaService;
 
 import java.util.List;
@@ -37,5 +38,18 @@ public class AulaController {
     public ResponseEntity<List<AulaDto>> getAllAulas() {
         List<AulaDto> cursos = aulaService.findAllAulas();
         return new ResponseEntity<>(cursos, HttpStatus.OK);
+    }
+
+    /**
+     * Endpoint POST para crear una nueva aula.
+     * Recibe un AulaDto en el cuerpo de la solicitud (JSON).
+     *
+     * @param aulaDto El DTO del aula a crear, enviado en el cuerpo de la solicitud.
+     * @return Un ResponseEntity con el DTO del aula creado y el estado HTTP 201 Created.
+     */
+    @PostMapping
+    public ResponseEntity<AulaDto> crearAula(@RequestBody AulaDto aulaDto) {
+        AulaDto nuevoAula = aulaService.guardarAula(aulaDto);
+        return new ResponseEntity<>(nuevoAula, HttpStatus.CREATED);
     }
 }

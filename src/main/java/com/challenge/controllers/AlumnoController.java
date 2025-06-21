@@ -40,4 +40,15 @@ public class AlumnoController {
         List<AlumnoDto> alumnos = alumnoService.findAllAlumnos();
         return new ResponseEntity<>(alumnos, HttpStatus.OK);
     }
+
+    /**
+     * Endpoint DELETE para eliminar un alumno.
+     * @param id El ID del alumno a eliminar.
+     * @return Un ResponseEntity con estado HTTP 204 No Content si se elimina, o 404 Not Found.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarAlumno(@PathVariable Long id) {
+        alumnoService.eliminarAlumno(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
