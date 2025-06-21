@@ -119,9 +119,17 @@ Para inspeccionar la base de datos en memoria (solo en ejecución local):
 
 URL: http://localhost:8080/h2-console
 
+
 Credenciales: 
 JDBC URL: jdbc:h2:mem:testdb
 - User Name: sa
 - Password: 1234
 
-
+### TODO:
+- Agregar logs por medio de SLF4J: INFO, DEBUG.
+- Implementar Swagger para documentar las API´s desarrolladas.
+- Incorporar los alumnos a un curso ya creado.
+- Consumir los mensajes generados por RabbitMQ y leerlos desde una API nueva /getUltimosCursos disponibles.
+- Implementar manejo global de excepciones.
+- Mejorar la cobertura de los test en el resto de la aplicación.
+- Incorporar algun reporte por ejemplo Jasper para obtener un listado de Alumnos, Cursos, Materias, etc. 
