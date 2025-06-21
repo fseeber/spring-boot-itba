@@ -11,8 +11,8 @@ WORKDIR /app
 # 'apt-get install -y' instala los paquetes sin pedir confirmación.
 RUN apt-get update && \
     apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/* # Limpia el caché de apt para reducir el tamaño de la imagen
-
+    rm -rf /var/lib/apt/lists/* 
+# Limpia el caché de apt para reducir el tamaño de la imagen
 # Copia los archivos de configuración de Maven (pom.xml y .mvn)
 # para permitir que Maven descargue dependencias.
 COPY .mvn/ .mvn
