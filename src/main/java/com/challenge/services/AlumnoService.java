@@ -6,6 +6,7 @@ import com.challenge.mappers.AlumnoMapper;
 import com.challenge.repositories.AlumnoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,18 @@ public class AlumnoService {
         List<Alumno> alumnos = alumnoRepository.findAll();
         return alumnoMapper.toDtoList(alumnos);
     }
-
+    
+    /**
+     * Obtiene un alumno segun su ID
+     *
+     * @param id id del alumno que recibe
+     * @return retorna un alumno en caso de existir
+     */
+    public Optional<AlumnoDto> findAlumnoById(Long id) {
+        Optional<Alumno> alumnoEntity = alumnoRepository.findById(id);
+        return alumnoEntity.map(alumnoMapper::toDto); 
+    }
+    
     /**
      * Elimina un alumno por su ID.
      * @param id El ID del alumno a eliminar.

@@ -4,6 +4,7 @@ import com.challenge.dtos.AlumnoDto;
 import com.challenge.services.AlumnoService;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,20 @@ public class AlumnoController {
     public ResponseEntity<List<AlumnoDto>> getAllAulas() {
         List<AlumnoDto> alumnos = alumnoService.findAllAlumnos();
         return new ResponseEntity<>(alumnos, HttpStatus.OK);
+    }
+
+    /**
+     * Endpoint GET para obtener un alumno por su ID.
+     *
+     * @param id El ID del alumno a buscar.
+     * @return Un ResponseEntity con un AlumnoDto si se encuentra, o un estado HTTP 404 NOT FOUND si no.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<AlumnoDto> getAlumnoById(@PathVariable Long id) {
+        Optional<AlumnoDto> alumno = alumnoService.findAlumnoById(id);
+
+        return alumno.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

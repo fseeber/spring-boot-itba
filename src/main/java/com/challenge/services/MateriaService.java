@@ -1,6 +1,8 @@
 package com.challenge.services;
 
+import com.challenge.dtos.CursoDto;
 import com.challenge.dtos.MateriaDto;
+import com.challenge.entities.Curso;
 import com.challenge.entities.Materia;
 import com.challenge.mappers.MateriaMapper;
 import com.challenge.repositories.MateriaRepository;
@@ -90,6 +92,17 @@ public class MateriaService {
     public java.util.List<MateriaDto> findAllMaterias() {
         List<Materia> materias = materiaRepository.findAll();
         return materiaMapper.toDtoList(materias);
+    }
+
+    /**
+     * Obtiene una materia segun su ID
+     *
+     * @param id id de la materia que recibe
+     * @return retorna una materia en caso de existir
+     */
+    public Optional<MateriaDto> findMateriaById(Long id) {
+        Optional<Materia> materiaEntity = materiaRepository.findById(id);
+        return materiaEntity.map(materiaMapper::toDto); 
     }
 
      /**

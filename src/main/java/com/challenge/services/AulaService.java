@@ -8,6 +8,7 @@ import com.challenge.mappers.AulaMapper;
 import com.challenge.repositories.AulaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,17 @@ public class AulaService {
     public List<AulaDto> findAllAulas() {
         List<Aula> aulas = aulaRepository.findAll();
         return aulaMapper.toDtoList(aulas);
+    }
+    
+    /**
+     * Obtiene un aula segun su ID
+     *
+     * @param id id del aula que recibe
+     * @return retorna un aula en caso de existir
+     */
+    public Optional<AulaDto> findAulaById(Long id) {
+        Optional<Aula> aulaEntity = aulaRepository.findById(id);
+        return aulaEntity.map(aulaMapper::toDto); 
     }
 
     /**

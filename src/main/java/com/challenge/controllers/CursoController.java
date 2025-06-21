@@ -1,5 +1,6 @@
 package com.challenge.controllers;
 
+import com.challenge.dtos.AulaDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.services.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cursos")
@@ -41,6 +43,20 @@ public class CursoController {
     public ResponseEntity<List<CursoDto>> getAllCursos() {
         List<CursoDto> cursos = cursoService.findAllCursos();
         return new ResponseEntity<>(cursos, HttpStatus.OK);
+    }
+
+    /**
+     * Endpoint GET para obtener un curso por su ID.
+     *
+     * @param id El ID del curso a buscar.
+     * @return Un ResponseEntity con un CursoDto si se encuentra, o un estado HTTP 404 NOT FOUND si no.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<CursoDto> getCursoById(@PathVariable Long id) {
+        Optional<CursoDto> curso = cursoService.findCursoById(id);
+
+        return curso.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

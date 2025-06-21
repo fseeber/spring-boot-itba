@@ -1,5 +1,6 @@
 package com.challenge.controllers;
 
+import com.challenge.dtos.AulaDto;
 import com.challenge.dtos.MateriaDto;
 import com.challenge.services.MateriaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/materias")
@@ -38,6 +40,20 @@ public class MateriaController {
     public ResponseEntity<List<MateriaDto>> getAllMaterias() {
         List<MateriaDto> materias = materiaService.findAllMaterias();
         return new ResponseEntity<>(materias, HttpStatus.OK);
+    }
+
+        /**
+     * Endpoint GET para obtener una materia por su ID.
+     *
+     * @param id El ID de la materia a buscar.
+     * @return Un ResponseEntity con un MateriaDto si se encuentra, o un estado HTTP 404 NOT FOUND si no.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<MateriaDto> getMateriaById(@PathVariable Long id) {
+        Optional<MateriaDto> materia = materiaService.findMateriaById(id);
+
+        return materia.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

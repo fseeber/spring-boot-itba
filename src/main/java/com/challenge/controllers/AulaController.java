@@ -1,10 +1,12 @@
 package com.challenge.controllers;
 
+import com.challenge.dtos.AlumnoDto;
 import com.challenge.dtos.AulaDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.services.AulaService;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,20 @@ public class AulaController {
     public ResponseEntity<List<AulaDto>> getAllAulas() {
         List<AulaDto> cursos = aulaService.findAllAulas();
         return new ResponseEntity<>(cursos, HttpStatus.OK);
+    }
+    
+    /**
+     * Endpoint GET para obtener un aula por su ID.
+     *
+     * @param id El ID del aula a buscar.
+     * @return Un ResponseEntity con un AulaDto si se encuentra, o un estado HTTP 404 NOT FOUND si no.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<AulaDto> getAulaById(@PathVariable Long id) {
+        Optional<AulaDto> aula = aulaService.findAulaById(id);
+
+        return aula.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

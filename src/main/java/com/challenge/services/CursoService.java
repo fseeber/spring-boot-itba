@@ -1,5 +1,6 @@
 package com.challenge.services;
 
+import com.challenge.dtos.AulaDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.entities.Curso;
 import com.challenge.entities.Materia;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CursoService {
@@ -74,6 +76,17 @@ public class CursoService {
     public List<CursoDto> findAllCursos() {
         List<Curso> cursos = cursoRepository.findAll();
         return cursoMapper.toDtoList(cursos);
+    }
+
+    /**
+     * Obtiene un curso segun su ID
+     *
+     * @param id id del curso que recibe
+     * @return retorna un curso en caso de existir
+     */
+    public Optional<CursoDto> findCursoById(Long id) {
+        Optional<Curso> cursoEntity = cursoRepository.findById(id);
+        return cursoEntity.map(cursoMapper::toDto); 
     }
 
     /**
