@@ -1,8 +1,6 @@
 package com.challenge.services;
 
-import com.challenge.dtos.AlumnoDto;
 import com.challenge.dtos.AulaDto;
-import com.challenge.entities.Alumno;
 import com.challenge.entities.Aula;
 import com.challenge.mappers.AulaMapper;
 import com.challenge.repositories.AulaRepository;

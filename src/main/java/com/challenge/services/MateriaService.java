@@ -1,8 +1,6 @@
 package com.challenge.services;
 
-import com.challenge.dtos.CursoDto;
 import com.challenge.dtos.MateriaDto;
-import com.challenge.entities.Curso;
 import com.challenge.entities.Materia;
 import com.challenge.mappers.MateriaMapper;
 import com.challenge.repositories.MateriaRepository;

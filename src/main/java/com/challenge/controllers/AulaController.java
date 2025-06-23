@@ -1,8 +1,6 @@
 package com.challenge.controllers;
 
-import com.challenge.dtos.AlumnoDto;
 import com.challenge.dtos.AulaDto;
-import com.challenge.dtos.CursoDto;
 import com.challenge.services.AulaService;
 
 import java.util.List;

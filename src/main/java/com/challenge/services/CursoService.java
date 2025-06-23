@@ -1,6 +1,5 @@
 package com.challenge.services;
 
-import com.challenge.dtos.AulaDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.entities.Curso;
 import com.challenge.entities.Materia;
@@ -33,8 +32,8 @@ public class CursoService {
     @Autowired
     private CursoMapper cursoMapper;
 
-    @Autowired
-    private RabbitMQSender rabbitMQSender;
+    //@Autowired
+    //private RabbitMQSender rabbitMQSender;
 
     /**
      * Crea y guarda un nuevo curso en la base de datos.

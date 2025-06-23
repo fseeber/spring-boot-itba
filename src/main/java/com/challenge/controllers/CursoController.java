@@ -1,6 +1,5 @@
 package com.challenge.controllers;
 
-import com.challenge.dtos.AulaDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.services.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
