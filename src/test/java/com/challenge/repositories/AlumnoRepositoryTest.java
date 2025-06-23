@@ -22,7 +22,7 @@ class AlumnoRepositoryTest {
     @Test
     @DisplayName("Debería guardar un alumno correctamente")
     void shouldSaveAlumno() {
-        Alumno alumno = new Alumno(null, "Juan", "Perez", 12345678, 100, "Calle Falsa 123", 20);
+        Alumno alumno = new Alumno(null, "Juan", "Perez", 12345678, 100, "seeberfederico@gmail.com", "Calle Falsa 123", 20, null);
 
         Alumno savedAlumno = alumnoRepository.save(alumno);
 

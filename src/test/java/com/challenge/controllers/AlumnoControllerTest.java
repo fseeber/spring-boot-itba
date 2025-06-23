@@ -40,8 +40,8 @@ class AlumnoControllerTest {
     @Test
     @DisplayName("Debería guardar un alumno y devolver estado 201 Created")
     void shouldGuardarAlumnoAndReturn201Created() throws Exception {
-        AlumnoDto inputDto = new AlumnoDto(null, "Roberto", "Carlos", 12345678, 100, "Calle A 123", 25);
-        AlumnoDto outputDto = new AlumnoDto(1L, "Roberto", "Carlos", 12345678, 100, "Calle A 123", 25);
+        AlumnoDto inputDto = new AlumnoDto(null, "Roberto", "Carlos", 12345678, null, 100, "Calle A 123", 25);
+        AlumnoDto outputDto = new AlumnoDto(1L, "Roberto", "Carlos", 12345678, null, 100, "Calle A 123", 25);
 
         when(alumnoService.guardarAlumno(any(AlumnoDto.class))).thenReturn(outputDto);
 
@@ -58,8 +58,8 @@ class AlumnoControllerTest {
     @DisplayName("Debería obtener todos los alumnos y devolver estado 200 OK")
     void shouldGetAllAlumnosAndReturn200Ok() throws Exception {
 
-        AlumnoDto alumno1 = new AlumnoDto(1L, "Laura", "Vega", 11111111, 200, "Av. Siempre Viva 10", 22);
-        AlumnoDto alumno2 = new AlumnoDto(2L, "Diego", "Silva", 22222222, 201, "Calle B 456", 24);
+        AlumnoDto alumno1 = new AlumnoDto(1L, "Laura", "Vega", 11111111, null, 200, "Av. Siempre Viva 10", 22);
+        AlumnoDto alumno2 = new AlumnoDto(2L, "Diego", "Silva", 22222222, null, 201, "Calle B 456", 24);
         List<AlumnoDto> alumnosList = Arrays.asList(alumno1, alumno2);
 
         when(alumnoService.findAllAlumnos()).thenReturn(alumnosList);

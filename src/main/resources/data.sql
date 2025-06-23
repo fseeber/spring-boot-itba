@@ -1,9 +1,9 @@
-INSERT INTO ALUMNOS (nombre, apellido, dni, matricula, direccion, edad) VALUES
-('Lionel', 'Messi', 34567890, 10001, 'Rosario', 37),
-('Emiliano', 'Martinez', 40123456, 10002, 'Mar del Plata', 31),
-('Julian', 'Alvarez', 45678901, 10003, 'Calchin', 24),
-('Enzo', 'Fernandez', 47890123, 10004, 'San Martin', 23),
-('Paulo', 'Dybala', 38901234, 10005, 'Laguna Larga', 30);
+INSERT INTO ALUMNOS (nombre, apellido, dni, email, matricula, direccion, edad) VALUES
+('Lionel', 'Messi', 34567890, 'lmessi@example.com', 10001, 'Rosario', 37),
+('Emiliano', 'Martinez', 40123456, 'emartinez@example.com', 10002, 'Mar del Plata', 31),
+('Julian', 'Alvarez', 45678901, 'jalvarez@example.com', 10003, 'Calchin', 24),
+('Enzo', 'Fernandez', 47890123, 'efernandez@example.com', 10004, 'San Martin', 23),
+('Paulo', 'Dybala', 38901234, 'pdybala@example.com', 10005, 'Laguna Larga', 30);
 
 INSERT INTO MATERIAS (nombre, creditos, carrera, detalle, programa) VALUES
 ('Programacion Orientada a Objetos', 8, 'Ingenieria en Sistemas', 'Conceptos avanzados de POO y Java', 'Clases, objetos, herencia, polimorfismo, interfaces'),

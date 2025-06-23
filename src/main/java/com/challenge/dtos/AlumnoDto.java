@@ -12,6 +12,7 @@ public class AlumnoDto {
     private String nombre;
     private String apellido;
     private Integer dni;
+    private String email;
     private Integer matricula;
     private String direccion;
     private Integer edad;

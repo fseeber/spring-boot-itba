@@ -41,13 +41,13 @@ class AlumnoServiceTest {
 
     @BeforeEach
     void setUp() {
-        alumnoDtoForCreation = new AlumnoDto(null, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+        alumnoDtoForCreation = new AlumnoDto(null, "Carlos", "Lopez", 11223344, null, 200, "San Martin 500", 25);
 
-        alumnoEntityWithoutId = new Alumno(null, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+        alumnoEntityWithoutId = new Alumno(null, "Carlos", "Lopez", 11223344, 200, "San Martin 500", null, 25, null);
 
-        alumnoEntityWithId = new Alumno(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+        alumnoEntityWithId = new Alumno(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", null, 25, null);
 
-        alumnoDtoWithId = new AlumnoDto(1L, "Carlos", "Lopez", 11223344, 200, "San Martin 500", 25);
+        alumnoDtoWithId = new AlumnoDto(1L, "Carlos", "Lopez", 11223344, null, 200, "San Martin 500", 25);
     }
 
     @Test
@@ -78,8 +78,8 @@ class AlumnoServiceTest {
     @Test
     @DisplayName("Debería obtener todos los alumnos")
     void shouldGetAllAlumnos() {
-        Alumno otroAlumnoEntity = new Alumno(2L, "Ana", "Ruiz", 55667788, 201, "Los Andes 100", 28);
-        AlumnoDto otroAlumnoDto = new AlumnoDto(2L, "Ana", "Ruiz", 55667788, 201, "Los Andes 100", 28);
+        Alumno otroAlumnoEntity = new Alumno(2L, "Ana", "Ruiz", 55667788, 201, "seeberfederico@gmail.com","Los Andes 100", 28, null);
+        AlumnoDto otroAlumnoDto = new AlumnoDto(2L, "Ana", "Ruiz", 55667788, null, 201, "Los Andes 100", 28);
 
         List<Alumno> alumnosEntities = Arrays.asList(alumnoEntityWithId, otroAlumnoEntity);
         List<AlumnoDto> alumnosDtos = Arrays.asList(alumnoDtoWithId, otroAlumnoDto);

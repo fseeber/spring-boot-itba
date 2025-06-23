@@ -1,5 +1,8 @@
 package com.challenge.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,15 +31,19 @@ public class Alumno {
     private Integer matricula;
     
     private String direccion;
-    
+    private String email;
     private Integer edad;
 
-    public Alumno(String nombre, String apellido, Integer dni, Integer matricula, String direccion, Integer edad) {
+    @ManyToMany(mappedBy = "alumnosInscritos")
+    private List<Curso> cursos = new ArrayList<>();
+
+    public Alumno(String nombre, String apellido, String direccion, Integer matricula, Integer dni, String email, Integer edad) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
         this.matricula = matricula;
         this.direccion = direccion;
+        this.email = email;
         this.edad = edad;
     }
 }

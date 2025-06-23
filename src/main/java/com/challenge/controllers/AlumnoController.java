@@ -2,6 +2,7 @@ package com.challenge.controllers;
 
 import com.challenge.dtos.AlumnoDto;
 import com.challenge.services.AlumnoService;
+import com.challenge.services.CursoService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,9 @@ public class AlumnoController {
 
     @Autowired
     private AlumnoService alumnoService;
+
+    @Autowired
+    private CursoService cursoService; // Inyectamos el servicio asincrónico
 
     /**
      * Endpoint POST para guardar un nuevo alumno.
@@ -65,5 +69,27 @@ public class AlumnoController {
     public ResponseEntity<Void> eliminarAlumno(@PathVariable Long id) {
         alumnoService.eliminarAlumno(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Endpoint POST para inscribir a un alumno en un curso.
+     * Este método recibe la petición HTTP y devuelve una respuesta inmediata al cliente,
+     * indicando que la solicitud ha sido aceptada. El procesamiento real de la inscripción
+     * se delega a un método asincrónico en el CursoService.
+     *
+     * @param alumnoId El ID del alumno que desea inscribirse.
+     * @param cursoId El ID del curso al que el alumno desea inscribirse.
+     * @return Un ResponseEntity con un mensaje informativo y el estado HTTP 202 Accepted.
+     */
+    @PostMapping("/{alumnoId}/inscribirCurso/{cursoId}")
+    public ResponseEntity<String> inscribirAlumnoAcurso(
+            @PathVariable Long alumnoId,
+            @PathVariable Long cursoId) {
+
+        System.out.println("Solicitud de inscripción recibida para Alumno ID: " + alumnoId + " en Curso ID: " + cursoId + " (Hilo Principal: " + Thread.currentThread().getName() + ")");
+
+        cursoService.procesarInscripcionAsincronica(alumnoId, cursoId);
+
+        return new ResponseEntity<>("Solicitud de inscripción para el Alumno " + alumnoId + " al Curso " + cursoId + " ha sido recibida. Procesando en segundo plano...", HttpStatus.ACCEPTED);
     }
 }
