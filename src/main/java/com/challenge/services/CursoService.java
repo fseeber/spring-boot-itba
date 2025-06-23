@@ -10,7 +10,6 @@ import com.challenge.repositories.AlumnoRepository;
 import com.challenge.repositories.CursoRepository;
 import com.challenge.repositories.MateriaRepository;
 import com.challenge.repositories.AulaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -23,23 +22,28 @@ import java.util.Optional;
 @Service
 public class CursoService {
 
-    @Autowired
-    private AlumnoRepository alumnoRepository;
+    private final AlumnoRepository alumnoRepository;
+    private final CursoRepository cursoRepository;
+    private final MateriaRepository materiaRepository;
+    private final AulaRepository aulaRepository;
+    private final NotificacionService notificacionService;
+    private final CursoMapper cursoMapper;
 
-    @Autowired
-    private CursoRepository cursoRepository;
-
-    @Autowired
-    private MateriaRepository materiaRepository;
-
-    @Autowired
-    private AulaRepository aulaRepository;
-
-    @Autowired
-    private NotificacionService notificacionService;
-
-    @Autowired
-    private CursoMapper cursoMapper;
+    public CursoService(
+        AlumnoRepository alumnoRepository,
+        CursoRepository cursoRepository,
+        MateriaRepository materiaRepository,
+        AulaRepository aulaRepository,
+        NotificacionService notificacionService,
+        CursoMapper cursoMapper) {
+        
+        this.alumnoRepository = alumnoRepository;
+        this.cursoRepository = cursoRepository;
+        this.materiaRepository = materiaRepository;
+        this.aulaRepository = aulaRepository;
+        this.notificacionService = notificacionService;
+        this.cursoMapper = cursoMapper;
+    }
 
     //@Autowired
     //private RabbitMQSender rabbitMQSender;

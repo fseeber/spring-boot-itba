@@ -2,13 +2,14 @@ package com.challenge.services;
 
 import com.challenge.dtos.AulaDto;
 import com.challenge.entities.Aula;
+import com.challenge.mappers.AlumnoMapper;
 import com.challenge.mappers.AulaMapper;
+import com.challenge.repositories.AlumnoRepository;
 import com.challenge.repositories.AulaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +18,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class AulaService {
 
-    @Autowired
-    private AulaRepository aulaRepository;
+    private final AulaRepository aulaRepository;
+    private final AulaMapper aulaMapper;
 
-    @Autowired
-    private AulaMapper aulaMapper;
-
+    public AulaService(AulaRepository aulaRepository, AulaMapper aulaMapper) {
+        this.aulaRepository = aulaRepository;
+        this.aulaMapper = aulaMapper;
+    }
+    
     /**
      * Elimina un aula por su ID y dispara un proceso asíncrono.
      * @param id El ID del aula a eliminar.

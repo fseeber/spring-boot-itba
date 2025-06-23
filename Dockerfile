@@ -27,7 +27,7 @@ COPY src ./src
 
 # Empaqueta la aplicación en un archivo JAR ejecutable.
 # La bandera -DskipTests es opcional, pero común en Dockerfiles de producción.
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # --- Segunda etapa: Crear la imagen final de la aplicación ---
 # Usa una imagen base más pequeña para la ejecución final, lo que reduce el tamaño de la imagen.

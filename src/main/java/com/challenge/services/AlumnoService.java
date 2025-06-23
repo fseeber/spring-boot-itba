@@ -8,7 +8,6 @@ import com.challenge.repositories.AlumnoRepository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +16,13 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class AlumnoService {
 
-    @Autowired
-    private AlumnoRepository alumnoRepository;
+    private final AlumnoRepository alumnoRepository;
+    private final AlumnoMapper alumnoMapper;
 
-    @Autowired
-    private AlumnoMapper alumnoMapper;
+    public AlumnoService(AlumnoRepository alumnoRepository, AlumnoMapper alumnoMapper) {
+        this.alumnoRepository = alumnoRepository;
+        this.alumnoMapper = alumnoMapper;
+    }
 
     /**
      * Guarda un nuevo alumno en la base de datos.

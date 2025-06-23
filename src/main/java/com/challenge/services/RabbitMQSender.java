@@ -13,11 +13,13 @@ public class RabbitMQSender {
 
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQSender.class);
 
-    @Autowired
-    private AmqpTemplate rabbitTemplate;
+    private final AmqpTemplate rabbitTemplate;
+    private final String queueName;
 
-    @Value("${app.rabbitmq.queue-name}")
-    private String queueName;
+    public RabbitMQSender(AmqpTemplate rabbitTemplate, @Value("${app.rabbitmq.queue-name}") String queueName) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.queueName = queueName;
+    }
 
     /**
      * Envía un mensaje al RabbitMQ.

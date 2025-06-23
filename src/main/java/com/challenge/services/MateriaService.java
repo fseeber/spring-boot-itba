@@ -4,7 +4,6 @@ import com.challenge.dtos.MateriaDto;
 import com.challenge.entities.Materia;
 import com.challenge.mappers.MateriaMapper;
 import com.challenge.repositories.MateriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +15,15 @@ import java.util.Optional;
 @Service
 public class MateriaService {
 
-    @Autowired
-    private MateriaRepository materiaRepository;
+    private final MateriaRepository materiaRepository;
 
-    @Autowired
-    private MateriaMapper materiaMapper;
+    private final MateriaMapper materiaMapper;
+    
 
+    public MateriaService(MateriaRepository materiaRepository, MateriaMapper materiaMapper) {
+        this.materiaRepository = materiaRepository;
+        this.materiaMapper = materiaMapper;
+    }
     /**
      * Actualiza una materia existente en la base de datos.
      * @param id El ID de la materia a actualizar.
