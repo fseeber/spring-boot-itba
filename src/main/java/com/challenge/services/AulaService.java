@@ -2,9 +2,7 @@ package com.challenge.services;
 
 import com.challenge.dtos.AulaDto;
 import com.challenge.entities.Aula;
-import com.challenge.mappers.AlumnoMapper;
 import com.challenge.mappers.AulaMapper;
-import com.challenge.repositories.AlumnoRepository;
 import com.challenge.repositories.AulaRepository;
 
 import java.util.List;
@@ -25,7 +23,7 @@ public class AulaService {
         this.aulaRepository = aulaRepository;
         this.aulaMapper = aulaMapper;
     }
-    
+
     /**
      * Elimina un aula por su ID y dispara un proceso asíncrono.
      * @param id El ID del aula a eliminar.

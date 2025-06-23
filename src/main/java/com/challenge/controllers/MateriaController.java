@@ -2,7 +2,6 @@ package com.challenge.controllers;
 
 import com.challenge.dtos.MateriaDto;
 import com.challenge.services.MateriaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,11 @@ import java.util.Optional;
 @RequestMapping("/api/materias")
 public class MateriaController {
 
-    @Autowired
-    private MateriaService materiaService;
+    private final MateriaService materiaService;
+
+    public MateriaController(MateriaService materiaService) {
+        this.materiaService = materiaService;
+    }
 
     /**
      * Endpoint PUT para actualizar una materia existente.
@@ -41,7 +43,7 @@ public class MateriaController {
         return new ResponseEntity<>(materias, HttpStatus.OK);
     }
 
-        /**
+    /**
      * Endpoint GET para obtener una materia por su ID.
      *
      * @param id El ID de la materia a buscar.

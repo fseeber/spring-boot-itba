@@ -7,7 +7,6 @@ import com.challenge.services.CursoService;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/alumnos")
 public class AlumnoController {
 
-    @Autowired
-    private AlumnoService alumnoService;
+    private final AlumnoService alumnoService;
+    private final CursoService cursoService;
 
-    @Autowired
-    private CursoService cursoService; // Inyectamos el servicio asincrónico
+    public AlumnoController(AlumnoService alumnoService, CursoService cursoService) {
+        this.alumnoService = alumnoService;
+        this.cursoService = cursoService;
+    }
 
     /**
      * Endpoint POST para guardar un nuevo alumno.
