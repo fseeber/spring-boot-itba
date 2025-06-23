@@ -34,7 +34,7 @@ public class Alumno {
     private String email;
     private Integer edad;
 
-    @ManyToMany(mappedBy = "alumnosInscritos")
+    @ManyToMany(mappedBy = "alumnosInscriptos")
     private List<Curso> cursos = new ArrayList<>();
 
     public Alumno(String nombre, String apellido, String direccion, Integer matricula, Integer dni, String email, Integer edad) {

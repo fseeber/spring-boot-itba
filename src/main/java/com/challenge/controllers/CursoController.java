@@ -1,5 +1,6 @@
 package com.challenge.controllers;
 
+import com.challenge.dtos.CursoConAlumnosDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.services.CursoService;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,18 @@ public class CursoController {
         return curso.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+    
+    /**
+     * Endpoint GET para obtener la lista de todos los cursos con sus alumnos inscritos.
+     *
+     * @return Un ResponseEntity con una lista de CursoConAlumnosDto y el estado HTTP 200 OK.
+     */
+    @GetMapping("/con-alumnos")
+    public ResponseEntity<List<CursoConAlumnosDto>> getAllCursosConAlumnos() {
+        List<CursoConAlumnosDto> cursos = cursoService.findAllCursosConAlumnosInscriptos();
+        return new ResponseEntity<>(cursos, HttpStatus.OK);
+    }
+    
     /**
      * Endpoint DELETE para eliminar un curso.
      * @param id El ID del curso a eliminar.

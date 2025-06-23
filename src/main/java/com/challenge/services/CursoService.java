@@ -1,8 +1,10 @@
 package com.challenge.services;
 
+import com.challenge.dtos.CursoConAlumnosDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.entities.Curso;
 import com.challenge.entities.Materia;
+import com.challenge.mappers.AlumnoMapper;
 import com.challenge.mappers.CursoMapper;
 import com.challenge.entities.Alumno;
 import com.challenge.entities.Aula;
@@ -18,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CursoService {
@@ -28,6 +31,7 @@ public class CursoService {
     private final AulaRepository aulaRepository;
     private final NotificacionService notificacionService;
     private final CursoMapper cursoMapper;
+    private final AlumnoMapper alumnoMapper;
 
     public CursoService(
         AlumnoRepository alumnoRepository,
@@ -35,7 +39,8 @@ public class CursoService {
         MateriaRepository materiaRepository,
         AulaRepository aulaRepository,
         NotificacionService notificacionService,
-        CursoMapper cursoMapper) {
+        CursoMapper cursoMapper,
+        AlumnoMapper alumnoMapper) {
         
         this.alumnoRepository = alumnoRepository;
         this.cursoRepository = cursoRepository;
@@ -43,6 +48,7 @@ public class CursoService {
         this.aulaRepository = aulaRepository;
         this.notificacionService = notificacionService;
         this.cursoMapper = cursoMapper;
+        this.alumnoMapper = alumnoMapper;
     }
 
     //@Autowired
@@ -88,6 +94,21 @@ public class CursoService {
     public List<CursoDto> findAllCursos() {
         List<Curso> cursos = cursoRepository.findAll();
         return cursoMapper.toDtoList(cursos);
+    }
+
+    /**
+     * Obtiene una lista de todos los cursos junto con los alumnos inscritos en cada uno.
+     * Esta operación puede ser costosa si hay muchos cursos y alumnos,
+     *
+     * @return Una lista de CursoConAlumnosDto.
+     */
+    @Transactional(readOnly = true)
+    public List<CursoConAlumnosDto> findAllCursosConAlumnosInscriptos() {
+        List<Curso> cursos = cursoRepository.findAllWithAlumnosInscriptos(); 
+
+        return cursos.stream()
+                     .map(cursoMapper::toCursoConAlumnosDto)
+                     .collect(Collectors.toList());
     }
 
     /**
@@ -143,7 +164,7 @@ public class CursoService {
             Alumno alumno = alumnoOpt.get();
             Curso curso = cursoOpt.get();
 
-            if (curso.getAlumnosInscritos().contains(alumno)) {
+            if (curso.getAlumnosInscriptos().contains(alumno)) {
                 System.out.println("Alumno " + alumno.getNombre() + " ya está inscrito en el curso " + curso.getNombre() + ".");
                 return;
             }
@@ -152,7 +173,7 @@ public class CursoService {
             Thread.sleep(2500);
 
             alumno.getCursos().add(curso);
-            curso.getAlumnosInscritos().add(alumno);
+            curso.getAlumnosInscriptos().add(alumno);
 
             alumnoRepository.save(alumno);
             cursoRepository.save(curso);

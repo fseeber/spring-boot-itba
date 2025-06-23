@@ -38,7 +38,7 @@ public class Curso {
             joinColumns = @JoinColumn(name = "curso_id"),
             inverseJoinColumns = @JoinColumn(name = "alumno_id")
     )
-    private List<Alumno> alumnosInscritos = new ArrayList<>();
+    private List<Alumno> alumnosInscriptos = new ArrayList<>();
 
     public Curso(String nombre, String descripcion, Integer anio, Materia materia, Aula aula) {
         this.nombre = nombre;
