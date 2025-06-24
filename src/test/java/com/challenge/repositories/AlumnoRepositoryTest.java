@@ -34,7 +34,7 @@ class AlumnoRepositoryTest {
     @Test
     @DisplayName("Debería encontrar un alumno por DNI")
     void shouldFindAlumnoByDni() {
-        Alumno alumno = new Alumno(null, "Maria", "Gomez", 87654321, 101, "Avenida Siempre Viva", 22);
+        Alumno alumno = new Alumno("Maria", "Gomez", "Avenida Siempre Viva", 101,87654321 , "Avenida Siempre Viva", 22);
         alumnoRepository.save(alumno); 
 
         Optional<Alumno> foundAlumno = alumnoRepository.findByDni(87654321);
