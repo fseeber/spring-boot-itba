@@ -6,6 +6,8 @@ import com.challenge.services.AulaService;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/aulas")
 public class AulaController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AulaController.class);
+
     private final AulaService aulaService;
     
     public AulaController(AulaService aulaService) {
         this.aulaService = aulaService;
+        logger.info("AulaController inicializado.");
     }
 
     /**
@@ -27,8 +32,15 @@ public class AulaController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarAula(@PathVariable Long id) {
-        aulaService.eliminarAula(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        logger.info("Recibida solicitud para eliminar aula con ID: {}", id);
+        try {
+            aulaService.eliminarAula(id);
+            logger.info("Aula con ID {} eliminada exitosamente.", id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            logger.error("Error al eliminar aula con ID {}: {}", id, e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -38,8 +50,10 @@ public class AulaController {
      */
     @GetMapping
     public ResponseEntity<List<AulaDto>> getAllAulas() {
-        List<AulaDto> cursos = aulaService.findAllAulas();
-        return new ResponseEntity<>(cursos, HttpStatus.OK);
+        logger.info("Recibida solicitud para obtener todas las aulas.");
+        List<AulaDto> aulas = aulaService.findAllAulas();
+        logger.info("Se encontraron {} aulas.", aulas.size());
+        return new ResponseEntity<>(aulas, HttpStatus.OK);
     }
     
     /**
@@ -50,10 +64,16 @@ public class AulaController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<AulaDto> getAulaById(@PathVariable Long id) {
+        logger.info("Recibida solicitud para obtener aula con ID: {}", id);
         Optional<AulaDto> aula = aulaService.findAulaById(id);
 
-        return aula.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return aula.map(value -> {
+            logger.info("Aula con ID {} encontrada.", id);
+            return new ResponseEntity<>(value, HttpStatus.OK);
+        }).orElseGet(() -> {
+            logger.warn("Aula con ID {} no encontrada.", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        });
     }
 
     /**
@@ -65,7 +85,14 @@ public class AulaController {
      */
     @PostMapping
     public ResponseEntity<AulaDto> crearAula(@RequestBody AulaDto aulaDto) {
-        AulaDto nuevoAula = aulaService.guardarAula(aulaDto);
-        return new ResponseEntity<>(nuevoAula, HttpStatus.CREATED);
+        logger.info("Recibida solicitud para crear aula.");
+        try {
+            AulaDto nuevoAula = aulaService.guardarAula(aulaDto);
+            logger.info("Aula creada exitosamente con ID: {}", nuevoAula.getId());
+            return new ResponseEntity<>(nuevoAula, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Error al crear aula: {}", e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -2,9 +2,13 @@ package com.challenge.controllers;
 
 import com.challenge.dtos.MateriaDto;
 import com.challenge.services.MateriaService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +16,13 @@ import java.util.Optional;
 @RequestMapping("/api/materias")
 public class MateriaController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MateriaController.class);
+
     private final MateriaService materiaService;
 
     public MateriaController(MateriaService materiaService) {
         this.materiaService = materiaService;
+        logger.info("MateriaController inicializado.");
     }
 
     /**
@@ -27,19 +34,35 @@ public class MateriaController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<MateriaDto> actualizarMateria(@PathVariable Long id, @RequestBody MateriaDto materiaDto) {
-        MateriaDto materiaActualizada = materiaService.actualizarMateria(id, materiaDto);
-        return new ResponseEntity<>(materiaActualizada, HttpStatus.OK);
+        logger.info("Recibida solicitud para actualizar materia con ID: {}", id);
+        try {
+            MateriaDto materiaActualizada = materiaService.actualizarMateria(id, materiaDto);
+            logger.info("Materia con ID {} actualizada exitosamente.", id);
+            return new ResponseEntity<>(materiaActualizada, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error al actualizar materia con ID {}: {}", id, e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
     public ResponseEntity<MateriaDto> crearMateria(@RequestBody MateriaDto materiaDto) {
-        MateriaDto nuevaMateria = materiaService.crearMateria(materiaDto);
-        return new ResponseEntity<>(nuevaMateria, HttpStatus.CREATED);
+        logger.info("Recibida solicitud para crear materia: {}", materiaDto.getNombre());
+        try {
+            MateriaDto nuevaMateria = materiaService.crearMateria(materiaDto);
+            logger.info("Materia creada exitosamente con ID: {}", nuevaMateria.getId());
+            return new ResponseEntity<>(nuevaMateria, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Error al crear materia: {}", e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<MateriaDto>> getAllMaterias() {
+        logger.info("Recibida solicitud para obtener todas las materias.");
         List<MateriaDto> materias = materiaService.findAllMaterias();
+        logger.info("Se encontraron {} materias.", materias.size());
         return new ResponseEntity<>(materias, HttpStatus.OK);
     }
 
@@ -51,10 +74,16 @@ public class MateriaController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<MateriaDto> getMateriaById(@PathVariable Long id) {
+        logger.info("Recibida solicitud para obtener materia con ID: {}", id);
         Optional<MateriaDto> materia = materiaService.findMateriaById(id);
 
-        return materia.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return materia.map(value -> {
+            logger.info("Materia con ID {} encontrada.", id);
+            return new ResponseEntity<>(value, HttpStatus.OK);
+        }).orElseGet(() -> {
+            logger.warn("Materia con ID {} no encontrada.", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        });
     }
 
     /**
@@ -64,7 +93,14 @@ public class MateriaController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarMateria(@PathVariable Long id) {
-        materiaService.eliminarMateria(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        logger.info("Recibida solicitud para eliminar materia con ID: {}", id);
+        try {
+            materiaService.eliminarMateria(id);
+            logger.info("Materia con ID {} eliminada exitosamente.", id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            logger.error("Error al eliminar materia con ID {}: {}", id, e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
