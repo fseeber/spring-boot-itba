@@ -1,20 +1,25 @@
 package com.challenge.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificacionService {
 
+    private static final Logger logger = LoggerFactory.getLogger(NotificacionService.class);
+
     @Async("threadPoolTaskExecutor")
     public void enviarCorreoConfirmacionMatricula(String emailAlumno, String nombreCurso) {
-        System.out.println("Enviando correo de confirmación de matrícula a: " + emailAlumno + " para el curso: " + nombreCurso + " (Hilo: " + Thread.currentThread().getName() + ")");
+        logger.info("Enviando correo de confirmación de matrícula a: {} para el curso: {} (Hilo: {})",
+                    emailAlumno, nombreCurso, Thread.currentThread().getName());
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Interrupción al enviar correo.");
+            logger.warn("El envío de correo de confirmación a {} fue interrumpido.", emailAlumno, e);
         }
-        System.out.println("Correo de confirmación enviado a: " + emailAlumno);
+        logger.info("Correo de confirmación enviado a: {}", emailAlumno);
     }
 }

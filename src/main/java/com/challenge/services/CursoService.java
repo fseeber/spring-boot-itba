@@ -4,7 +4,6 @@ import com.challenge.dtos.CursoConAlumnosDto;
 import com.challenge.dtos.CursoDto;
 import com.challenge.entities.Curso;
 import com.challenge.entities.Materia;
-import com.challenge.mappers.AlumnoMapper;
 import com.challenge.mappers.CursoMapper;
 import com.challenge.entities.Alumno;
 import com.challenge.entities.Aula;
@@ -12,6 +11,8 @@ import com.challenge.repositories.AlumnoRepository;
 import com.challenge.repositories.CursoRepository;
 import com.challenge.repositories.MateriaRepository;
 import com.challenge.repositories.AulaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,14 @@ import java.util.stream.Collectors;
 @Service
 public class CursoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
+
     private final AlumnoRepository alumnoRepository;
     private final CursoRepository cursoRepository;
     private final MateriaRepository materiaRepository;
     private final AulaRepository aulaRepository;
     private final NotificacionService notificacionService;
     private final CursoMapper cursoMapper;
-    private final AlumnoMapper alumnoMapper;
 
     public CursoService(
         AlumnoRepository alumnoRepository,
@@ -39,8 +41,7 @@ public class CursoService {
         MateriaRepository materiaRepository,
         AulaRepository aulaRepository,
         NotificacionService notificacionService,
-        CursoMapper cursoMapper,
-        AlumnoMapper alumnoMapper) {
+        CursoMapper cursoMapper) {
         
         this.alumnoRepository = alumnoRepository;
         this.cursoRepository = cursoRepository;
@@ -48,11 +49,8 @@ public class CursoService {
         this.aulaRepository = aulaRepository;
         this.notificacionService = notificacionService;
         this.cursoMapper = cursoMapper;
-        this.alumnoMapper = alumnoMapper;
+        logger.info("CursoService inicializado.");
     }
-
-    //@Autowired
-    //private RabbitMQSender rabbitMQSender;
 
     /**
      * Crea y guarda un nuevo curso en la base de datos.
@@ -65,23 +63,31 @@ public class CursoService {
      */
     @Transactional
     public CursoDto crearCurso(CursoDto cursoDto) {
+        logger.info("Intentando crear curso para materia ID: {} y aula ID: {}", 
+                    cursoDto.getMateria().getId(), 
+                    (cursoDto.getAula() != null ? cursoDto.getAula().getId() : "N/A"));
+
         Materia materia = materiaRepository.findById(cursoDto.getMateria().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Materia con ID " + cursoDto.getMateria().getId() + " no encontrada."));
+                .orElseThrow(() -> {
+                    logger.warn("Materia con ID {} no encontrada al crear curso.", cursoDto.getMateria().getId());
+                    return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Materia con ID " + cursoDto.getMateria().getId() + " no encontrada.");
+                });
 
         Aula aula = null;
         if (cursoDto.getAula() != null && cursoDto.getAula().getId() != null) {
             aula = aulaRepository.findById(cursoDto.getAula().getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aula con ID " + cursoDto.getAula().getId() + " no encontrada."));
+                    .orElseThrow(() -> {
+                        logger.warn("Aula con ID {} no encontrada al crear curso.", cursoDto.getAula().getId());
+                        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aula con ID " + cursoDto.getAula().getId() + " no encontrada.");
+                    });
         }
 
         Curso curso = cursoMapper.toEntity(cursoDto);
-
         curso.setMateria(materia);
         curso.setAula(aula);
 
         Curso cursoGuardado = cursoRepository.save(curso);
-
-        //rabbitMQSender.send(cursoMapper.toDto(cursoGuardado));
+        logger.info("Curso '{}' (ID: {}) creado exitosamente.", cursoGuardado.getNombre(), cursoGuardado.getId());
 
         return cursoMapper.toDto(cursoGuardado);
     }
@@ -92,7 +98,9 @@ public class CursoService {
      * @return Una lista de CursoDto.
      */
     public List<CursoDto> findAllCursos() {
+        logger.info("Buscando todos los cursos.");
         List<Curso> cursos = cursoRepository.findAll();
+        logger.info("Se encontraron {} cursos.", cursos.size());
         return cursoMapper.toDtoList(cursos);
     }
 
@@ -104,7 +112,9 @@ public class CursoService {
      */
     @Transactional(readOnly = true)
     public List<CursoConAlumnosDto> findAllCursosConAlumnosInscriptos() {
+        logger.info("Buscando todos los cursos con alumnos inscritos.");
         List<Curso> cursos = cursoRepository.findAllWithAlumnosInscriptos(); 
+        logger.info("Se encontraron {} cursos con alumnos inscritos.", cursos.size());
 
         return cursos.stream()
                      .map(cursoMapper::toCursoConAlumnosDto)
@@ -118,7 +128,11 @@ public class CursoService {
      * @return retorna un curso en caso de existir
      */
     public Optional<CursoDto> findCursoById(Long id) {
+        logger.info("Buscando curso con ID: {}", id);
         Optional<Curso> cursoEntity = cursoRepository.findById(id);
+        if (cursoEntity.isEmpty()) {
+            logger.warn("Curso con ID {} no encontrado.", id);
+        }
         return cursoEntity.map(cursoMapper::toDto); 
     }
 
@@ -129,10 +143,13 @@ public class CursoService {
      */
     @Transactional
     public void eliminarCurso(Long id) {
+        logger.info("Intentando eliminar curso con ID: {}", id);
         if (!cursoRepository.existsById(id)) {
+            logger.warn("Intento de eliminación fallido: Curso con ID {} no encontrado.", id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso con ID " + id + " no encontrado para eliminar.");
         }
         cursoRepository.deleteById(id);
+        logger.info("Curso con ID {} eliminado exitosamente.", id);
     }
 
     /**
@@ -146,18 +163,19 @@ public class CursoService {
     @Async("threadPoolTaskExecutor")
     @Transactional
     public void procesarInscripcionAsincronica(Long alumnoId, Long cursoId) {
-        System.out.println("Iniciando procesamiento de inscripción asincrónica para Alumno ID: " + alumnoId + " al Curso ID: " + cursoId + " (Hilo: " + Thread.currentThread().getName() + ")");
+        logger.info("Iniciando procesamiento de inscripción asincrónica para Alumno ID: {} al Curso ID: {} (Hilo: {})",
+                    alumnoId, cursoId, Thread.currentThread().getName());
 
         try {
             Optional<Alumno> alumnoOpt = alumnoRepository.findById(alumnoId);
             Optional<Curso> cursoOpt = cursoRepository.findById(cursoId);
 
             if (alumnoOpt.isEmpty()) {
-                System.err.println("Error en inscripción asincrónica: Alumno con ID " + alumnoId + " no encontrado.");
+                logger.error("Error en inscripción asincrónica: Alumno con ID {} no encontrado.", alumnoId);
                 return;
             }
             if (cursoOpt.isEmpty()) {
-                System.err.println("Error en inscripción asincrónica: Curso con ID " + cursoId + " no encontrado.");
+                logger.error("Error en inscripción asincrónica: Curso con ID {} no encontrado.", cursoId);
                 return;
             }
 
@@ -165,11 +183,13 @@ public class CursoService {
             Curso curso = cursoOpt.get();
 
             if (curso.getAlumnosInscriptos().contains(alumno)) {
-                System.out.println("Alumno " + alumno.getNombre() + " ya está inscrito en el curso " + curso.getNombre() + ".");
+                logger.info("Alumno '{}' (ID: {}) ya está inscrito en el curso '{}' (ID: {}).",
+                            alumno.getNombre(), alumno.getId(), curso.getNombre(), curso.getId());
                 return;
             }
 
-            System.out.println("Inscribiendo a " + alumno.getNombre() + " en " + curso.getNombre() + " en la base de datos...");
+            logger.info("Inscribiendo a '{}' (ID: {}) en '{}' (ID: {}) en la base de datos...",
+                        alumno.getNombre(), alumno.getId(), curso.getNombre(), curso.getId());
             Thread.sleep(2500);
 
             alumno.getCursos().add(curso);
@@ -178,18 +198,23 @@ public class CursoService {
             alumnoRepository.save(alumno);
             cursoRepository.save(curso);
 
-            System.out.println("Inscripción de Alumno " + alumno.getNombre() + " al Curso " + curso.getNombre() + " completada en DB.");
+            logger.info("Inscripción de Alumno '{}' (ID: {}) al Curso '{}' (ID: {}) completada en DB.",
+                        alumno.getNombre(), alumno.getId(), curso.getNombre(), curso.getId());
 
             notificacionService.enviarCorreoConfirmacionMatricula(alumno.getEmail(), curso.getNombre());
+            logger.info("Notificación de matrícula enviada para Alumno '{}' al Curso '{}'.",
+                        alumno.getNombre(), curso.getNombre());
 
-            System.out.println("Procesamiento asíncrono de inscripción finalizado para Alumno " + alumno.getNombre() + " y Curso " + curso.getNombre() + ".");
+            logger.info("Procesamiento asíncrono de inscripción finalizado para Alumno '{}' y Curso '{}'.",
+                        alumno.getNombre(), curso.getNombre());
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Procesamiento de inscripción asincrónico interrumpido para Alumno ID: " + alumnoId + " y Curso ID: " + cursoId + ".");
+            logger.warn("Procesamiento de inscripción asincrónico interrumpido para Alumno ID: {} y Curso ID: {}.",
+                        alumnoId, cursoId, e);
         } catch (Exception e) {
-            System.err.println("Error inesperado durante la inscripción asincrónica para Alumno ID: " + alumnoId + " y Curso ID: " + cursoId + ": " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error inesperado durante la inscripción asincrónica para Alumno ID: {} y Curso ID: {}: {}",
+                         alumnoId, cursoId, e.getMessage(), e);
         }
     }
 }
