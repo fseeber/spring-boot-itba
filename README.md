@@ -73,6 +73,8 @@ Para inspeccionar la base de datos en memoria (solo en ejecución local):
 
 URL: http://localhost:8080/h2-console
 
+Collections en POSTMAN
+- Importar challenge ITBA.postman_collection.json desde el área de workspace
 
 Credenciales: 
 JDBC URL: jdbc:h2:mem:testdb
