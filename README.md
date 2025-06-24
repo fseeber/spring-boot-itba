@@ -18,7 +18,7 @@ Opción 1: Ejecución Local (con Maven)
 
 Clonar: git clone https://github.com/fseeber/spring-boot-itba.git y cd spring-boot-itba.
 Compilar: mvn clean install
-Ejecutar: java -jar target/spring-boot-itba-0.0.1-SNAPSHOT.jar (ajusta el nombre del JAR). La app estará en http://localhost:8080.
+Ejecutar: java -jar target/spring-boot-itba-0.0.1-SNAPSHOT.jar (ajusta el nombre del JAR). La app estará en http://localhost:8080
 
 Opción 2: Ejecución Vía Docker
 
@@ -27,93 +27,47 @@ Construir imagen: docker-compose build
 Levantar: docker-compose up La app estará en http://localhost:8080.
 Detener: Ctrl+C y luego docker-compose down para limpiar contenedores.
 
-Ejemplos de Endpoints (cURL)
-La aplicación se ejecuta en http://localhost:8080.
+Endpoints
+La aplicación se ejecuta en http://localhost:8080/api
 
-Alumnos (/api/alumnos)
+### Alumnos
 
-Crear (POST):
+| Método | Endpoint | Descripción | Body Ejemplo (POST) |
+| :----- | :-------------------------- | :----------------------------------------------- | :------------------------------------------------------------------- |
+| `GET`  | `/alumnos`                  | Obtiene todos los alumnos.                       | N/A                                                                  |
+| `GET`  | `/alumnos/{id}`             | Obtiene un alumno por ID.                        | N/A                                                                  |
+| `POST` | `/alumnos`                  | Crea un nuevo alumno.                            | `{"nombre": "Federico", "apellido": "Seeber", "dni": 2342422, "matricula": 123123, "email": "fseeber@example.com", "direccion": "Calle Falsa 123", "edad": 37}` |
+| `POST` | `/alumnos/{alumnoId}/inscribirCurso/{cursoId}` | Inscribe un alumno en un curso.                  | N/A                                                                  |
+| `DELETE`| `/alumnos/{id}`             | Elimina un alumno por ID.     
 
+### Aulas
 
-```Bash
-curl -X POST http://localhost:8080/api/alumnos \
-  -H 'Content-Type: application/json' \
-  -d '{ "nombre": "Federico", "apellido": "Gomez", "dni": 12345678, "matricula": 2023001, "direccion": "Av. Libertador 100", "edad": 28 }'
-Respuesta: HTTP 201 Created
-```
-Listar Todos (GET):
+| Método | Endpoint | Descripción | Body Ejemplo (POST) |
+| :----- | :-------------------------- | :----------------------------------------------- | :------------------------------------------------------------------- |
+| `GET`  | `/aulas` | Obtiene todas las aulas. | N/A |
+| `GET`  | `/aulas/{id}` | Obtiene un aula por ID. | N/A |
+| `POST` | `/aulas` | Crea una nueva aula. | `{"numero": "B2061", "capacidad": 50, "ubicacion": "Edificio Central2", "observaciones": "aula auxiliar"}` |
+| `DELETE`| `/aulas/{id}` | Elimina un aula por ID. | N/A |
 
-```Bash
-curl http://localhost:8080/api/alumnos
-Respuesta: HTTP 200 OK
-```
-Obtener por ID (GET):
+### Cursos
 
-```Bash
-curl http://localhost:8080/api/alumnos/1
-Respuesta: HTTP 200 OK (o 404 Not Found)
-```
-Actualizar (PUT):
+| Método | Endpoint | Descripción | Body Ejemplo (POST) |
+| :----- | :-------------------------- | :----------------------------------------------- | :------------------------------------------------------------------- |
+| `GET`  | `/cursos` | Obtiene todos los cursos. | N/A |
+| `GET`  | `/cursos/{id}` | Obtiene un curso por ID. | N/A |
+| `GET`  | `/cursos/con-alumnos` | Obtiene cursos con alumnos inscritos. | N/A |
+| `POST` | `/cursos` | Crea un nuevo curso. | `{"nombre": "Nuevo Curso", "descripcion": "Descripción del curso.", "anio": 2026, "materia": { "id": 1 }, "aula": { "id": 1 }}` |
+| `DELETE`| `/cursos/{id}` | Elimina un curso por ID. | N/A |
 
-```Bash
-curl -X PUT http://localhost:8080/api/alumnos/1 \
-  -H 'Content-Type: application/json' \
-  -d '{ "nombre": "Federico Actualizado", "apellido": "Gomez", "dni": 12345678, "matricula": 2023001, "direccion": "Nueva Direccion 456", "edad": 29 }'
-Respuesta: HTTP 200 OK (o 404 Not Found / 409 Conflict)
-```
-Eliminar (DELETE):
+### Materias
 
-```Bash
-curl -X DELETE http://localhost:8080/api/alumnos/1
-Respuesta: HTTP 204 No Content (o 404 Not Found)
-```
-Materias (/api/materias)
+| Método | Endpoint | Descripción | Body Ejemplo (POST) |
+| :----- | :-------------------------- | :----------------------------------------------- | :------------------------------------------------------------------- |
+| `GET`  | `/materias` | Obtiene todas las materias. | N/A |
+| `GET`  | `/materias/{id}` | Obtiene una materia por ID. | N/A |
+| `POST` | `/materias` | Crea una nueva materia. | `{"nombre": "Introduccion a Programacion", "creditos": 6, "carrera": "Ingenieria en Sistemas", "detalle": "Conceptos basicos", "programa": "Python y Java."}` |
+| `DELETE`| `/materias/{id}` | Elimina una materia por ID. | N/A |
 
-Crear (POST):
-
-```Bash
-curl -X POST http://localhost:8080/api/materias \
-  -H 'Content-Type: application/json' \
-  -d '{ "nombre": "Programacion Avanzada", "creditos": 6, "carrera": "Ingenieria en Sistemas", "detalle": "Conceptos de estructuras de datos y algoritmos.", "programa": "Introduccion, Arrays, Listas, Arboles, Grafos, Complejidad" }'
-```
-Listar Todas (GET):
-
-```Bash
-curl http://localhost:8080/api/materias
-Aulas (/api/aulas)
-```
-Crear (POST):
-
-```Bash
-curl -X POST http://localhost:8080/api/aulas \
-  -H 'Content-Type: application/json' \
-  -d '{ "numero": "A201", "capacidad": 40, "ubicacion": "Edificio Norte", "observaciones": "Equipada con pizarra digital y proyector." }'
-```
-Listar Todas (GET):
-
-```Bash
-curl http://localhost:8080/api/aulas
-```
-Eliminar (DELETE):
-
-```Bash
-curl -X DELETE http://localhost:8080/api/aulas/1
-```
-Nota: Desvincula cursos asociados. Respuesta: HTTP 204 No Content.
-Cursos (/api/cursos)
-Crear (POST): (Requiere id de una Materia y opcionalmente un id de Aula existentes)
-
-```Bash
-
-curl -X POST http://localhost:8080/api/cursos \
-  -H 'Content-Type: application/json' \
-  -d '{ "nombre": "Taller de Spring Boot", "descripcion": "Desarrollo de APIs REST.", "anio": 2025, "materia": { "id": 1 }, "aula": { "id": 1 } }'
-```
-Listar Todos (GET):
-
-```Bash
-curl http://localhost:8080/api/cursos
-```
 Consola H2
 Para inspeccionar la base de datos en memoria (solo en ejecución local):
 
@@ -126,9 +80,7 @@ JDBC URL: jdbc:h2:mem:testdb
 - Password: 1234
 
 ### TODO:
-- Agregar logs por medio de SLF4J: INFO, DEBUG.
 - Implementar Swagger para documentar las API´s desarrolladas.
-- Incorporar los alumnos a un curso ya creado.
 - Consumir los mensajes generados por RabbitMQ y leerlos desde una API nueva /getUltimosCursos disponibles.
 - Implementar manejo global de excepciones.
 - Mejorar la cobertura de los test en el resto de la aplicación.
